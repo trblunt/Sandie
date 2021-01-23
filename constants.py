@@ -2,6 +2,8 @@ from numpy import ubyte
 
 ElementPair = tuple[ubyte, ubyte]
 
+NeighborhoodTuple = tuple[ubyte, ubyte, ubyte, ubyte]
+
 elements: dict[str, ubyte] = {
     "nothing": 0x00,
     "water": 0x01,

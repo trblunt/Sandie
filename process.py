@@ -1,6 +1,8 @@
 from typing import Callable
 import numpy as np
-from constants import elements, ElementPair
+from constants import elements, NeighborhoodTuple
+
+from alchemy import apply_alchemy_to_neighborhood
 
 
 def generate_margolus_neighborhoods(game_map: np.ndarray, is_offset: bool) -> list[np.ndarray]:
@@ -18,7 +20,7 @@ def generate_margolus_neighborhoods(game_map: np.ndarray, is_offset: bool) -> li
     return neighborhoods
 
 
-def apply_function_to_neighborhood(func: Callable[[np.ubyte, np.ubyte], ElementPair], neighborhood: np.ndarray) -> None:
+def apply_function_to_neighborhood(func: Callable[[np.ubyte, np.ubyte, np.ubyte, np.ubyte], NeighborhoodTuple], neighborhood: np.ndarray) -> None:
 
     def get_element(y: int, x: int) -> np.ubyte:
         if neighborhood.shape < (y+1, x+1):
@@ -34,12 +36,16 @@ def apply_function_to_neighborhood(func: Callable[[np.ubyte, np.ubyte], ElementP
     bottom_left = get_element(1, 0)
     bottom_right = get_element(1, 1)
 
-    top_left, bottom_left = func(top_left, bottom_left)
-    top_right, bottom_right = func(top_right, bottom_right)
-    top_left, top_right = func(top_left, top_right)
-    bottom_left, bottom_right = func(bottom_left, bottom_right)
+    top_left, top_right, bottom_left, bottom_right = func(top_left, top_right, bottom_left, bottom_right)
 
     set_element(0, 0, top_left)
     set_element(0, 1, top_right)
     set_element(1, 0, bottom_left)
     set_element(1, 1, bottom_right)
+
+def process_neighborhood(neighborhood: np.ndarray) -> None:
+    apply_function_to_neighborhood(apply_alchemy_to_neighborhood, neighborhood)
+
+def process_game_map(game_map: np.ndarray, is_offset: bool) -> None:
+    for neighborhood in generate_margolus_neighborhoods(game_map, is_offset):
+        process_neighborhood(neighborhood)

@@ -1,4 +1,4 @@
-from constants import elements as el, fire_stages, ElementPair
+from constants import elements as el, fire_stages, ElementPair, NeighborhoodTuple
 
 from typing import Union, Callable
 
@@ -12,6 +12,8 @@ alchemy_dict = []
 
 PairOrFunc = Union[ElementPair,
                     Callable[[], ElementPair]]
+
+
 
 def converse_reaction(result: PairOrFunc) -> PairOrFunc:
     if callable(result):
@@ -50,6 +52,14 @@ def apply_alchemy(element1: np.ubyte, element2: np.ubyte) -> ElementPair:
         return result()
     else:
         return result
+
+def apply_alchemy_to_neighborhood(top_left: np.ubyte, top_right: np.ubyte, bottom_left: np.ubyte, bottom_right: np.ubyte) -> NeighborhoodTuple:
+    top_left, bottom_left = apply_alchemy(top_left, bottom_left)
+    top_right, bottom_right = apply_alchemy(top_right, bottom_right)
+    top_left, top_right = apply_alchemy(top_left, top_right)
+    bottom_left, bottom_right = apply_alchemy(bottom_left, bottom_right)
+
+    return (top_left, top_right, bottom_left, bottom_right)
 
 # Define alchemical reactions
 
