@@ -4,6 +4,8 @@ from constants import elements, NeighborhoodTuple
 
 from alchemy import apply_alchemy_to_neighborhood
 
+from gravity import apply_gravity_for_neighborhood
+
 
 def generate_margolus_neighborhoods(game_map: np.ndarray, is_offset: bool) -> list[np.ndarray]:
     neighborhoods = []
@@ -36,15 +38,19 @@ def apply_function_to_neighborhood(func: Callable[[np.ubyte, np.ubyte, np.ubyte,
     bottom_left = get_element(1, 0)
     bottom_right = get_element(1, 1)
 
-    top_left, top_right, bottom_left, bottom_right = func(top_left, top_right, bottom_left, bottom_right)
+    top_left, top_right, bottom_left, bottom_right = func(
+        top_left, top_right, bottom_left, bottom_right)
 
     set_element(0, 0, top_left)
     set_element(0, 1, top_right)
     set_element(1, 0, bottom_left)
     set_element(1, 1, bottom_right)
 
+
 def process_neighborhood(neighborhood: np.ndarray) -> None:
+    apply_function_to_neighborhood(apply_gravity_for_neighborhood, neighborhood)
     apply_function_to_neighborhood(apply_alchemy_to_neighborhood, neighborhood)
+
 
 def process_game_map(game_map: np.ndarray, is_offset: bool) -> None:
     for neighborhood in generate_margolus_neighborhoods(game_map, is_offset):
