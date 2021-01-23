@@ -40,6 +40,6 @@ def apply_function_to_neighborhood(func: Callable[[np.ubyte, np.ubyte], ElementP
     bottom_left, bottom_right = func(bottom_left, bottom_right)
 
     set_element(0, 0, top_left)
-    set_element(0, 0, top_left)
-    set_element(0, 0, top_left)
-    set_element(0, 0, top_left)
+    set_element(0, 1, top_right)
+    set_element(1, 0, bottom_left)
+    set_element(1, 1, bottom_right)
