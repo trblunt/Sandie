@@ -1,4 +1,8 @@
-from constants import elements as el, fire_stages
+from constants import elements as el, fire_stages, ElementPair
+
+from typing import Union, Callable
+
+import numpy as np
 
 import random
 
@@ -6,18 +10,20 @@ alchemy_dict = []
 
 # Return the equivalent to a defined result for a reaction with elements in swapped positions.
 
+PairOrFunc = Union[ElementPair,
+                    Callable[[], ElementPair]]
 
-def converse_reaction(result):
+def converse_reaction(result: PairOrFunc) -> PairOrFunc:
     if callable(result):
-        def reversed_reaction():
-            # Return reversed result
+        def reversed_reaction() -> ElementPair:
+            # Return reversed result of function
             return result()[::-1]
         return reversed_reaction
-    # Return reversed result
+    # Return reversed static element pair
     return result[::-1]
 
 
-def define_reaction(element1, element2, result):
+def define_reaction(element1: np.ubyte, element2: np.ubyte, result: PairOrFunc) -> None:
 
     alchemy_key = (element1 << 8) + element2
     alchemy_reverse_key = (element2 << 8) + element1
@@ -26,7 +32,7 @@ def define_reaction(element1, element2, result):
     alchemy_dict[alchemy_reverse_key] = converse_reaction(result)
 
 
-def random_outcome(outcome_success, outcome_failure, p=0.5):
+def random_outcome(outcome_success: ElementPair, outcome_failure: ElementPair, p: float = 0.5) -> Callable[[], ElementPair]:
     def result():
         if random.random() <= p:
             return outcome_success
@@ -34,14 +40,16 @@ def random_outcome(outcome_success, outcome_failure, p=0.5):
             return outcome_failure
     return result
 
-def apply_alchemy(element1, element2):
-	alchemy_key = (element1 << 8) + element2
-	if not alchemy_key in alchemy_dict:
-		return element1, element2
-	result = alchemy_dict[alchemy_key]
-	if callable(result):
-		return result()
-	return result
+
+def apply_alchemy(element1: np.ubyte, element2: np.ubyte) -> ElementPair:
+    alchemy_key = (element1 << 8) + element2
+    if not alchemy_key in alchemy_dict:
+        return (element1, element2)
+    result = alchemy_dict[alchemy_key]
+    if callable(result):
+        return result()
+    else:
+        return result
 
 # Define alchemical reactions
 
