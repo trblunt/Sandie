@@ -8,7 +8,8 @@ def generate_margolus_neighborhoods(game_map, is_offset):
 
 	for y in range(1 if is_offset else 0, height, 2):
 		for x in range(1 if is_offset else 0, width, 2):
-			neighborhood = game_map[y, y+2, x, x+2]
+			# Slice 2x2 section of game map (Margolus neighborhood)
+			neighborhood = game_map[y:y+2, x:x+2]
 			# No need to process empty neighborhoods
 			if np.count_nonzero(neighborhood) != 0:
 				neighborhoods.append(neighborhood)
