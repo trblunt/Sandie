@@ -34,6 +34,15 @@ def random_outcome(outcome_success, outcome_failure, p=0.5):
             return outcome_failure
     return result
 
+def apply_alchemy(element1, element2):
+	alchemy_key = (element1 << 8) + element2
+	if not alchemy_key in alchemy_dict:
+		return element1, element2
+	result = alchemy_dict[alchemy_key]
+	if callable(result):
+		return result()
+	return result
+
 # Define alchemical reactions
 
 
