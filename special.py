@@ -2,13 +2,16 @@
 
 from numpy import ubyte
 
-from constants import elements, fire_stages, NeighborhoodTuple
+from constants import elements, NeighborhoodTuple
 
+fire_start = elements["fire_start"]
+fire_end = elements["fire_end"]
+nothing = elements["nothing"]
 
 def process_fire(element: ubyte) -> ubyte:
-    if element in fire_stages:
-        if element == elements["fire_end"]:
-            return elements["nothing"]
+    if element >= fire_start and element <= fire_end:
+        if element == fire_end:
+            return nothing
         return element + 1
     return element
 
