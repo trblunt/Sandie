@@ -26,28 +26,40 @@ def generate_margolus_neighborhoods(game_map: np.ndarray, is_offset: bool) -> li
 
 def apply_function_to_neighborhood(func: Callable[[np.ubyte, np.ubyte, np.ubyte, np.ubyte], NeighborhoodTuple], neighborhood: np.ndarray) -> None:
 
-    def get_element(y: int, x: int) -> np.ubyte:
-        if neighborhood.shape[0] < y + 1 or neighborhood.shape[1] < x + 1:
-            return elements["nothing"]
-        else:
-            return neighborhood[y, x]
+    max_y, max_x = neighborhood.shape
 
-    def set_element(y: int, x: int, value: np.ubyte) -> None:
-        if neighborhood.shape[0] >= y + 1 and neighborhood.shape[1] >= x + 1:
-            neighborhood[y, x] = value
+    top_left = top_right = bottom_left = bottom_right = 0x00
 
-    top_left = get_element(0, 0)
-    top_right = get_element(0, 1)
-    bottom_left = get_element(1, 0)
-    bottom_right = get_element(1, 1)
+    if max_y==2 and max_x==2:
+        top_left = neighborhood[0,0]
+        top_right = neighborhood[0,1]
+        bottom_left = neighborhood[1,0]
+        bottom_right = neighborhood[1,1]
+    elif max_y==2 and max_x==1:
+        top_left = neighborhood[0,0]
+        bottom_left = neighborhood[1,0]
+    elif max_y==1 and max_x == 2:
+        top_left = neighborhood[0,0]
+        top_right = neighborhood[0,1]
+    elif max_y==1 and max_x == 1:
+        top_left = neighborhood[0,0]
 
     top_left, top_right, bottom_left, bottom_right = func(
         top_left, top_right, bottom_left, bottom_right)
 
-    set_element(0, 0, top_left)
-    set_element(0, 1, top_right)
-    set_element(1, 0, bottom_left)
-    set_element(1, 1, bottom_right)
+    if max_y == 2 and max_x == 2:
+        neighborhood[0, 0] = top_left
+        neighborhood[0, 1] = top_right
+        neighborhood[1, 0] = bottom_left
+        neighborhood[1, 1] = bottom_right
+    elif max_y == 2 and max_x == 1:
+        neighborhood[0, 0] = top_left
+        neighborhood[1, 0] = bottom_left
+    elif max_y == 1 and max_x == 2:
+        neighborhood[0, 0] = top_left
+        neighborhood[0, 1] = top_right
+    elif max_y == 1 and max_x == 1:
+        neighborhood[0, 0] = top_left
 
 
 def process_neighborhood(neighborhood: np.ndarray) -> None:
