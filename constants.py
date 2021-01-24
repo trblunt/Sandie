@@ -1,3 +1,4 @@
+from typing import OrderedDict
 from numpy import ubyte
 
 ElementPair = tuple[ubyte, ubyte]
@@ -90,3 +91,18 @@ colors: dict[ubyte, int] = {
     elements["fire_3"]: 0xEA5328,
     elements["fire_end"]: 0xCE312C
 }
+
+labels: OrderedDict[ubyte, str] = OrderedDict([
+    (elements["sand"], "SAND"),
+    (elements["salt"], "SALT"),
+    (elements["water"], "WATER"),
+    (elements["oil"], "OIL"),
+    (elements["stone"], "STONE"),
+    (elements["metal"], "METAL"),
+    (elements["plant"], "PLANT"),
+    (elements["fire_start"], "FIRE"),
+    (elements["spout"], "SPOUT"),
+    (elements["torch"], "TORCH"),
+    (elements["lava"], "LAVA"),
+    (elements["acid"], "ACID")
+])

@@ -16,7 +16,9 @@ screen = pygame.display.set_mode((width * zoom_factor, height * zoom_factor + 20
 
 board = Board(width, height, zoom_factor=zoom_factor)
 
-draw.initialize(width, height, zoom_factor)
+renderer = draw.Renderer(width, height, zoom_factor)
+
+renderer.draw_ui(board, screen)
 
 pygame.time.set_timer(25, board.tick_delay)
 
@@ -26,7 +28,7 @@ while True:
 
         if event.type == timer_id:
             board.update()
-            draw.frame(board, screen)
+            renderer.frame(board, screen)
             pygame.display.flip()
             pygame.event.clear(eventtype = timer_id)
 
