@@ -18,7 +18,7 @@ board = Board(width, height, zoom_factor=zoom_factor)
 
 draw.initialize(width, height, zoom_factor)
 
-pygame.time.set_timer(25, 100)
+pygame.time.set_timer(25, board.tick_delay)
 
 while True:
     for event in pygame.event.get():
@@ -28,5 +28,6 @@ while True:
             board.update()
             draw.frame(board, screen)
             pygame.display.flip()
+            pygame.event.clear(eventtype = timer_id)
 
         # draw.draw_ui(board, screen)

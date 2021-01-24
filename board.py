@@ -14,6 +14,7 @@ class Board:
         self.height = height
         self.offset = False
         self.zoom_factor = zoom_factor
+        self.tick_delay = 125
         # self.array = np.zeros((height, width), dtype=np.ubyte)
         self.array = np.random.randint(0, 0x0e, (height, width), dtype=np.ubyte)
 
