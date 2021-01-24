@@ -6,20 +6,27 @@ import draw
 
 pygame.init()
 
-width, height = 60, 40
+width, height = 120, 90
 
-zoom_factor = 8
+zoom_factor = 4
 
-screen = pygame.display.set_mode((width * zoom_factor, height * zoom_factor))
+timer_id = 25
+
+screen = pygame.display.set_mode((width * zoom_factor, height * zoom_factor + 200))
 
 board = Board(width, height, zoom_factor=zoom_factor)
 
 draw.initialize(width, height, zoom_factor)
 
+pygame.time.set_timer(25, 100)
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
 
-    board.update()
-    draw.frame(board, screen)
-    pygame.display.flip()
+        if event.type == timer_id:
+            board.update()
+            draw.frame(board, screen)
+            pygame.display.flip()
+
+        # draw.draw_ui(board, screen)
