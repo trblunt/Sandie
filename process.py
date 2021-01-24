@@ -31,7 +31,7 @@ def apply_function_to_neighborhood(func: Callable[[np.ubyte, np.ubyte, np.ubyte,
 
     def set_element(y: int, x: int, value: np.ubyte) -> None:
         if neighborhood.shape >= (y+1, x+1):
-            neighborhood[y][x] = value
+            neighborhood[y, x] = value
 
     top_left = get_element(0, 0)
     top_right = get_element(0, 1)
