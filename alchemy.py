@@ -6,7 +6,7 @@ import numpy as np
 
 import random
 
-alchemy_dict = []
+alchemy_dict = {}
 
 # Return the equivalent to a defined result for a reaction with elements in swapped positions.
 
@@ -88,7 +88,7 @@ define_reaction(el["lava"], el["salt"], random_outcome(
     (el["lava"], el["lava"]), (el["lava"], el["salt"]), p=0.5))
 
 define_reaction(el["lava"], el["oil"], random_outcome(
-    (el["lava"], el["lava"]), (el["lava"], el["oild"]), p=0.8))
+    (el["lava"], el["lava"]), (el["lava"], el["oil"]), p=0.8))
 
 define_reaction(el["lava"], el["plant"], random_outcome(
     (el["lava"], el["lava"]), (el["lava"], el["plant"]), p=0.5))
