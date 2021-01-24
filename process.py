@@ -8,6 +8,7 @@ from gravity import apply_gravity_for_neighborhood
 
 from special import process_fire_for_neighborhood
 
+# TODO: Fix issue where some cells are not represented in offset Margolus neighborhoods.
 
 def generate_margolus_neighborhoods(game_map: np.ndarray, is_offset: bool) -> list[np.ndarray]:
     neighborhoods = []
