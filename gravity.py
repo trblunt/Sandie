@@ -24,7 +24,7 @@ def apply_gravity_for_neighborhood(top_left: np.ubyte, top_right: np.ubyte, bott
 
         if f_bl and f_br and (d_tl <= d_bl) and (d_tr <= d_br):
             bottom_left, bottom_right = bottom_right, bottom_left
-            d_bl, d_br = d_tr, d_tl
+            d_bl, d_br = d_br, d_bl
 
         #  Elements should fall through fluids if they are more dense than the fluid below them.
 
