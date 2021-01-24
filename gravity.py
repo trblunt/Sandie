@@ -1,8 +1,8 @@
-from constants import densities as d, fluids
+from constants import densities as d, fluids, NeighborhoodTuple
 import numpy as np
 
 
-def apply_gravity_for_neighborhood(top_left: np.ubyte, top_right: np.ubyte, bottom_left: np.ubyte, bottom_right: np.ubyte):
+def apply_gravity_for_neighborhood(top_left: np.ubyte, top_right: np.ubyte, bottom_left: np.ubyte, bottom_right: np.ubyte) -> NeighborhoodTuple:
     if top_left in d or top_right in d or bottom_left in d or bottom_right in d:
 
         d_tl = d[top_left] if top_left in d else -128
