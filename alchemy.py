@@ -35,7 +35,7 @@ def define_reaction(element1: np.ubyte, element2: np.ubyte, result: PairOrFunc) 
 
 
 def random_outcome(outcome_success: ElementPair, outcome_failure: ElementPair, p: float = 0.5) -> Callable[[], ElementPair]:
-    def result():
+    def result() -> ElementPair:
         if random.random() <= p:
             return outcome_success
         else:
