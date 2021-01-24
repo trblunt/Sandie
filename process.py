@@ -6,6 +6,8 @@ from alchemy import apply_alchemy_to_neighborhood
 
 from gravity import apply_gravity_for_neighborhood
 
+from special import process_fire_for_neighborhood
+
 
 def generate_margolus_neighborhoods(game_map: np.ndarray, is_offset: bool) -> list[np.ndarray]:
     neighborhoods = []
@@ -25,12 +27,13 @@ def generate_margolus_neighborhoods(game_map: np.ndarray, is_offset: bool) -> li
 def apply_function_to_neighborhood(func: Callable[[np.ubyte, np.ubyte, np.ubyte, np.ubyte], NeighborhoodTuple], neighborhood: np.ndarray) -> None:
 
     def get_element(y: int, x: int) -> np.ubyte:
-        if neighborhood.shape < (y+1, x+1):
+        if neighborhood.shape[0] < y + 1 or neighborhood.shape[1] < x + 1:
             return elements["nothing"]
-        return neighborhood[y, x]
+        else:
+            return neighborhood[y, x]
 
     def set_element(y: int, x: int, value: np.ubyte) -> None:
-        if neighborhood.shape >= (y+1, x+1):
+        if neighborhood.shape[0] >= y + 1 and neighborhood.shape[1] >= x + 1:
             neighborhood[y, x] = value
 
     top_left = get_element(0, 0)
@@ -48,7 +51,10 @@ def apply_function_to_neighborhood(func: Callable[[np.ubyte, np.ubyte, np.ubyte,
 
 
 def process_neighborhood(neighborhood: np.ndarray) -> None:
-    apply_function_to_neighborhood(apply_gravity_for_neighborhood, neighborhood)
+    apply_function_to_neighborhood(
+        process_fire_for_neighborhood, neighborhood)
+    apply_function_to_neighborhood(
+        apply_gravity_for_neighborhood, neighborhood)
     apply_function_to_neighborhood(apply_alchemy_to_neighborhood, neighborhood)
 
 
