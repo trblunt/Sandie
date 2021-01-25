@@ -14,9 +14,11 @@ timer_id = 25
 
 screen = pygame.display.set_mode((width * zoom_factor, height * zoom_factor + 200))
 
-board = Board(width, height, zoom_factor=zoom_factor)
-
 ui = draw.UserInterface(width, height, zoom_factor, screen)
+
+board = Board(width, height, zoom_factor, ui.game_surface)
+
+board.render()
 
 ui.draw_ui(board)
 
