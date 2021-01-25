@@ -1,3 +1,4 @@
+from typing import Optional
 import pygame
 import board, constants
 from ui.element_button import ElementButton
@@ -27,3 +28,11 @@ class ElementPicker:
         surface.fill(0x272822)
         for button in self.pickers:
             button.draw(board, surface)
+
+    def process_click(self, board: board.Board, x: float, y: float) -> bool:
+        for button in self.pickers:
+            if button.in_bounds((x, y)):
+                board.selected_element = button.element
+                return True
+        return False
+

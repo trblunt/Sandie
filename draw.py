@@ -6,17 +6,25 @@ import numpy as np
 
 import pygame
 
-class Renderer():
-    def __init__(self, width: int, height: int, zoom_factor: int = 1):
+class UserInterface():
+    def __init__(self, width: int, height: int, zoom_factor: int, display: pygame.Surface):
         self.game_surface = pygame.Surface((width * zoom_factor, height * zoom_factor))
         self.ui_surface = pygame.Surface((width * zoom_factor, 200))
-        self.ui = ElementPicker()
+        self.picker = ElementPicker()
+        self.display = display
 
-    def frame(self, board: Board, display: pygame.Surface):
+    def frame(self, board: Board):
         board.render(self.game_surface)
-        display.blit(self.game_surface, (0, 0))
+        self.display.blit(self.game_surface, (0, 0))
 
-    def draw_ui(self, board: Board, display: pygame.Surface):
+    def draw_ui(self, board: Board):
         # Render UI
-        self.ui.draw(board, self.ui_surface)
-        display.blit(self.ui_surface, (0, board.height * board.zoom_factor))
+        self.picker.draw(board, self.ui_surface)
+        self.display.blit(self.ui_surface, (0, board.height * board.zoom_factor))
+
+    def mouse_up(self, board: Board, x: float, y: float) -> bool:
+        if y >= board.height * board.zoom_factor:
+            if self.picker.process_click(board, x, y - (board.height * board.zoom_factor)):
+                self.draw_ui(board)
+        else:
+            pass

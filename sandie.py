@@ -16,9 +16,9 @@ screen = pygame.display.set_mode((width * zoom_factor, height * zoom_factor + 20
 
 board = Board(width, height, zoom_factor=zoom_factor)
 
-renderer = draw.Renderer(width, height, zoom_factor)
+ui = draw.UserInterface(width, height, zoom_factor, screen)
 
-renderer.draw_ui(board, screen)
+ui.draw_ui(board)
 
 pygame.time.set_timer(25, board.tick_delay)
 
@@ -28,8 +28,10 @@ while True:
 
         if event.type == timer_id:
             board.update()
-            renderer.frame(board, screen)
-            pygame.display.flip()
+            ui.frame(board)
             pygame.event.clear(eventtype = timer_id)
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            ui.mouse_up(board, event.pos[0], event.pos[1])
 
         # draw.draw_ui(board, screen)
+    pygame.display.flip()
