@@ -6,7 +6,7 @@ import draw
 
 pygame.init()
 
-width, height = 120, 90
+width, height = 160, 120
 
 zoom_factor = 4
 
@@ -34,6 +34,10 @@ while True:
             pygame.event.clear(eventtype = timer_id)
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             ui.mouse_up(board, event.pos[0], event.pos[1])
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            ui.mouse_down(board, event.pos[0], event.pos[1])
+        elif event.type == pygame.MOUSEMOTION and pygame.mouse.get_pressed()[0]:
+            ui.mouse_drag(board, event.pos[0], event.pos[1])
 
         # draw.draw_ui(board, screen)
     pygame.display.flip()
