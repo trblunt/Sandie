@@ -4,40 +4,42 @@ from board import Board
 
 import draw
 
-pygame.init()
+if __name__ == "__main__":
 
-width, height = 160, 120
+    pygame.init()
 
-zoom_factor = 4
+    width, height = 160, 120
 
-timer_id = 25
+    zoom_factor = 4
 
-screen = pygame.display.set_mode((width * zoom_factor, height * zoom_factor + 200))
+    timer_id = 25
 
-ui = draw.UserInterface(width, height, zoom_factor, screen)
+    screen = pygame.display.set_mode((width * zoom_factor, height * zoom_factor + 200))
 
-board = Board(width, height, zoom_factor, ui.game_surface)
+    ui = draw.UserInterface(width, height, zoom_factor, screen)
 
-board.render()
+    board = Board(width, height, zoom_factor, ui.game_surface)
 
-ui.draw_ui(board)
+    board.render_entire_board()
 
-pygame.time.set_timer(25, board.tick_delay)
+    ui.draw_ui(board)
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
+    pygame.time.set_timer(25, board.tick_delay)
 
-        if event.type == timer_id:
-            board.update()
-            ui.frame(board)
-            pygame.event.clear(eventtype = timer_id)
-        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-            ui.mouse_up(board, event.pos[0], event.pos[1])
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            ui.mouse_down(board, event.pos[0], event.pos[1])
-        elif event.type == pygame.MOUSEMOTION and pygame.mouse.get_pressed()[0]:
-            ui.mouse_drag(board, event.pos[0], event.pos[1])
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: sys.exit()
 
-        # draw.draw_ui(board, screen)
-    pygame.display.flip()
+            if event.type == timer_id:
+                board.update()
+                ui.frame(board)
+                pygame.event.clear(eventtype = timer_id)
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                ui.mouse_up(board, event.pos[0], event.pos[1])
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                ui.mouse_down(board, event.pos[0], event.pos[1])
+            elif event.type == pygame.MOUSEMOTION and pygame.mouse.get_pressed()[0]:
+                ui.mouse_drag(board, event.pos[0], event.pos[1])
+
+            # draw.draw_ui(board, screen)
+        pygame.display.flip()

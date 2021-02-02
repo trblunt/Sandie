@@ -18,7 +18,7 @@ class UserInterface():
         self.display = display
 
     def frame(self, board: Board):
-        # board.render()
+        board.render()
         self.display.blit(self.game_surface, (0, 0))
 
     def draw_ui(self, board: Board):

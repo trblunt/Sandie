@@ -25,12 +25,12 @@ class Board:
         self.array[::, 0:3] = elements["wall"]
         self.array[::, width - 3:width] = elements["wall"]
         self.array[height - 3:height, ::] = elements["wall"]
+        self.changed_pixels = set()
 
     def set(self, y: int, x: int, value: np.ubyte):
         if self.array[y,x] != value:
             self.array[y,x] = value
-            pixel_array = surfarray.pixels2d(self.surface)
-            pixel_array[x*self.zoom_factor:(x+1)*self.zoom_factor, y*self.zoom_factor:(y+1)*self.zoom_factor] = colors[value]
+            self.changed_pixels.add((y, x))
             #pixel_array.close()
 
     def paint(self, y: float, x: float):
@@ -48,5 +48,13 @@ class Board:
         self.offset = not self.offset
 
     def render(self):
+        pixel_array = surfarray.pixels2d(self.surface)
+        for y, x in self.changed_pixels:
+            pixel_array[x*self.zoom_factor:(
+                x+1)*self.zoom_factor, y*self.zoom_factor:(y+1)*self.zoom_factor] = colors[self.array[y,x]]
+        self.changed_pixels.clear()
+
+    
+    def render_entire_board(self):
         render_game_map(self.array, self.surface, z=self.zoom_factor)
 
