@@ -4,62 +4,60 @@ from typing import Union, Callable
 
 import numpy as np
 
-import random
+from numba import njit
 
-alchemy_dict = {}
+alchemy_array = np.full((256*256, 5), 255, dtype=np.ubyte) # p, (success1, success2), (failure1, failure2)
 
-# Return the equivalent to a defined result for a reaction with elements in swapped positions.
+# Swap the order of the reactants and results of the reaction.
+def converse_reaction(reaction: np.ndarray) -> np.ndarray:
+    converse = reaction.copy()
+    #Swap reactants
+    converse[1] = reaction[2]
+    converse[2] = reaction[1]
+    #Swap results
+    converse[3] = reaction[4]
+    converse[4] = reaction[3]
+    return converse
 
-PairOrFunc = Union[ElementPair,
-                    Callable[[], ElementPair]]
+def define_reaction(element1: np.ubyte, element2: np.ubyte, result: Union[np.ndarray, ElementPair]) -> None:
 
-
-
-def converse_reaction(result: PairOrFunc) -> PairOrFunc:
-    if callable(result):
-        def reversed_reaction() -> ElementPair:
-            # Return reversed result of function
-            return result()[::-1]
-        return reversed_reaction
-    # Return reversed static element pair
-    return result[::-1]
-
-
-def define_reaction(element1: np.ubyte, element2: np.ubyte, result: PairOrFunc) -> None:
+    if len(result) == 2:
+        # Convert result to ndarray format
+        result = np.array([100, result[0], result[1], 0, 0], dtype=np.ubyte)
 
     alchemy_key = (element1 << 8) + element2
-    alchemy_reverse_key = (element2 << 8) + element1
+    alchemy_converse_key = (element2 << 8) + element1
 
-    alchemy_dict[alchemy_key] = result
-    alchemy_dict[alchemy_reverse_key] = converse_reaction(result)
-
-
-def random_outcome(outcome_success: ElementPair, outcome_failure: ElementPair, p: float = 0.5) -> Callable[[], ElementPair]:
-    def result() -> ElementPair:
-        if random.random() <= p:
-            return outcome_success
-        else:
-            return outcome_failure
-    return result
+    alchemy_array[alchemy_key] = result
+    alchemy_array[alchemy_converse_key] = converse_reaction(result)
 
 
+def random_outcome(outcome_success: ElementPair, outcome_failure: ElementPair, p: float = 0.5) -> np.ndarray:
+    byte_probability = np.ubyte(p * 100)
+    return np.array([byte_probability, outcome_success[0], outcome_success[1], outcome_failure[0], outcome_failure[1]], dtype=np.ubyte)
+@njit
 def apply_alchemy(element1: np.ubyte, element2: np.ubyte) -> ElementPair:
     alchemy_key = (element1 << 8) + element2
-    if not alchemy_key in alchemy_dict:
-        return (element1, element2)
-    result = alchemy_dict[alchemy_key]
-    if callable(result):
-        return result()
+    result = alchemy_array[alchemy_key]
+    success_probability = result[0]
+    if success_probability != 255:
+        if success_probability == 100:
+            return result[1], result[2] # Static reaction
+        elif success_probability > np.random.randint(100):
+            return result[1], result[2] # Successful reaction
+        else:
+            return result[3], result[4] # Failed reaction
     else:
-        return result
+        return element1, element2 # No reaction
 
+@njit
 def apply_alchemy_to_neighborhood(top_left: np.ubyte, top_right: np.ubyte, bottom_left: np.ubyte, bottom_right: np.ubyte) -> NeighborhoodTuple:
     top_left, bottom_left = apply_alchemy(top_left, bottom_left)
     top_right, bottom_right = apply_alchemy(top_right, bottom_right)
     top_left, top_right = apply_alchemy(top_left, top_right)
     bottom_left, bottom_right = apply_alchemy(bottom_left, bottom_right)
 
-    return (top_left, top_right, bottom_left, bottom_right)
+    return top_left, top_right, bottom_left, bottom_right
 
 # Define alchemical reactions
 

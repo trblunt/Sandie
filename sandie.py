@@ -8,9 +8,9 @@ if __name__ == "__main__":
 
     pygame.init()
 
-    width, height = 160, 120
+    width, height = 400, 320
 
-    zoom_factor = 4
+    zoom_factor = 2
 
     timer_id = 25
 
@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     board = Board(width, height, zoom_factor, ui.game_surface)
 
-    board.render_entire_board()
+    #board.render_entire_board()
 
     ui.draw_ui(board)
 

@@ -1,19 +1,20 @@
-from constants import densities as d, fluids, NeighborhoodTuple
+from constants import densities_array as densities, fluids_array as fluids, NeighborhoodTuple
 import numpy as np
+from numba import njit
 
-
+@njit
 def apply_gravity_for_neighborhood(top_left: np.ubyte, top_right: np.ubyte, bottom_left: np.ubyte, bottom_right: np.ubyte) -> NeighborhoodTuple:
-    if top_left in d or top_right in d or bottom_left in d or bottom_right in d:
+    if top_left in densities or top_right in densities or bottom_left in densities or bottom_right in densities:
 
-        d_tl = d[top_left] if top_left in d else -128
-        d_tr = d[top_right] if top_right in d else -128
-        d_bl = d[bottom_left] if bottom_left in d else -128
-        d_br = d[bottom_right] if bottom_right in d else -128
+        d_tl = densities[top_left]
+        d_tr = densities[top_right]
+        d_bl = densities[bottom_left]
+        d_br = densities[bottom_right]
 
-        f_tl = top_left in fluids
-        f_tr = top_right in fluids
-        f_bl = bottom_left in fluids
-        f_br = bottom_right in fluids
+        f_tl = fluids[top_left]
+        f_tr = fluids[top_right]
+        f_bl = fluids[bottom_left]
+        f_br = fluids[bottom_right]
 
         #  Horizontally adjacent fluids should switch positions as long as they are both in the correct position
         #  in their vertical slice with regard to density, in order to simulate fluid flow.
@@ -49,4 +50,4 @@ def apply_gravity_for_neighborhood(top_left: np.ubyte, top_right: np.ubyte, bott
         elif f_tl and f_bl and d_tr > d_tl and d_tr > d_bl:
             top_right, bottom_left = bottom_left, top_right
 
-    return (top_left, top_right, bottom_left, bottom_right)
+    return top_left, top_right, bottom_left, bottom_right

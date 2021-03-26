@@ -1,5 +1,8 @@
 from typing import OrderedDict
 from numpy import ubyte
+import numpy as np
+from numba.typed import Dict
+from numba.core import types
 
 ElementPair = tuple[ubyte, ubyte]
 
@@ -106,3 +109,17 @@ labels: OrderedDict[ubyte, str] = OrderedDict([
     (elements["lava"], "LAVA"),
     (elements["acid"], "ACID")
 ])
+
+# Implement Numba typed dict for densities
+
+densities_array = np.full(256, -128, dtype=np.int8)
+for key, value in densities.items():
+    densities_array[key] = value
+
+fluids_array = np.full(256, False, dtype=np.bool_)
+for fluid in fluids:
+    fluids_array[fluid] = True
+
+colors_array = np.full(256, 0x000000, dtype=int)
+for key, value in colors.items():
+    colors_array[key] = value
