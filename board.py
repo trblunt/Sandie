@@ -18,6 +18,7 @@ def process_render_internal(changed_pixels, pixel_array, map, zoom_factor):
         x = changed_pixels[1][i]
         pixel_array[x*zoom_factor:(
             x+1)*zoom_factor, y*zoom_factor:(y+1)*zoom_factor] = colors[map[y, x]]
+
 class Board:
     def __init__(self, width: int, height: int, zoom_factor: int, surface: Surface):
         self.width = width
@@ -25,7 +26,7 @@ class Board:
         self.offset = False
         self.zoom_factor = zoom_factor
         self.surface = surface
-        self.tick_delay = 25
+        self.tick_delay = 15
         self.pen_size = 6
         self.selected_element = elements["sand"]
         self.array = np.zeros((height, width), dtype=np.ubyte)
