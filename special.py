@@ -4,6 +4,8 @@ from numpy import ubyte
 
 from numba import njit
 
+from numpy.random import random
+
 from constants import elements, NeighborhoodTuple
 
 fire_start = elements["fire_start"]
@@ -12,7 +14,7 @@ nothing = elements["nothing"]
 
 @njit
 def process_fire(element: ubyte) -> ubyte:
-    if element >= fire_start and element <= fire_end:
+    if element >= fire_start and element <= fire_end and random()<0.2:
         if element == fire_end:
             return nothing
         return element + 1
