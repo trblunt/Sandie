@@ -26,7 +26,7 @@ class Board:
         self.offset = False
         self.zoom_factor = zoom_factor
         self.surface = surface
-        self.tick_delay = 15
+        self.tick_delay = 10
         self.pen_size = 6
         self.selected_element = elements["sand"]
         self.array = np.zeros((height, width), dtype=np.ubyte)

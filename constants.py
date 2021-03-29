@@ -23,6 +23,9 @@ elements: dict[str, ubyte] = {
     "metal": 0x0b,
     "lava": 0x0c,
     "acid": 0x0d,
+    "ice": 0x0e,
+
+    "clone_base": 0xA0,
 
     "fire_start": 0xF0,
     "fire_1": 0xF1,
@@ -64,6 +67,24 @@ fluids: set[ubyte] = {
     elements["acid"],
 }
 
+cloneables: set[ubyte] = {
+    elements["fire_start"],
+    elements["fire_1"],
+    elements["fire_2"],
+    elements["fire_3"],
+    elements["fire_end"],
+    elements["water"],
+    elements["oil"],
+    elements["salt_water"],
+    elements["sand"],
+    elements["salt"],
+    elements["stone"],
+    elements["plant"],
+    elements["lava"],
+    elements["acid"],
+    elements["ice"]
+}
+
 fire_stages: set[ubyte] = {
     elements["fire_start"],
     elements["fire_1"],
@@ -87,6 +108,8 @@ colors: dict[ubyte, int] = {
     elements["metal"]: 0x404040,
     elements["lava"]: 0xFF6633,
     elements["acid"]: 0xCCFF00,
+    elements["ice"]: 0xCAE0E4,
+    elements["clone_base"]: 0x907010,
 
     elements["fire_start"]: 0xFEB815,
     elements["fire_1"]: 0xF47D1F,
@@ -107,8 +130,23 @@ labels: OrderedDict[ubyte, str] = OrderedDict([
     (elements["spout"], "SPOUT"),
     (elements["torch"], "TORCH"),
     (elements["lava"], "LAVA"),
-    (elements["acid"], "ACID")
+    (elements["acid"], "ACID"),
+    (elements["ice"], "ICE"),
+    (elements["clone_base"], "CLONE")
 ])
+
+# Implement clone elements
+
+for name in list(elements.keys()):
+    element = elements[name]
+    if element in cloneables:
+        if not element in fire_stages:
+            clone_name = "clone_" + name
+            elements[clone_name] = 0xA0 + element
+            colors[elements[clone_name]] = 0x907010
+
+elements["clone_fire_start"] = 0xA0 + 0x1F
+colors[0xA0 + 0x1F] = 0x907010
 
 # Implement Numba typed dict for densities
 
@@ -123,3 +161,4 @@ for fluid in fluids:
 colors_array = np.full(256, 0x000000, dtype=int)
 for key, value in colors.items():
     colors_array[key] = value
+

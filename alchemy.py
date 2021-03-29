@@ -1,4 +1,5 @@
-from constants import elements as el, fire_stages, ElementPair, NeighborhoodTuple
+from numpy import random
+from constants import elements as el, cloneables, fire_stages, ElementPair, NeighborhoodTuple
 
 from typing import Union, Callable
 
@@ -71,6 +72,15 @@ define_reaction(el["spout"], el["nothing"], (el["spout"], el["water"]))
 define_reaction(el["plant"], el["water"], random_outcome(
     (el["plant"], el["plant"]), (el["plant"], el["water"]), p=0.5))
 
+define_reaction(el["ice"], el["water"], random_outcome(
+    (el["ice"], el["ice"]), (el["ice"], el["water"]), p=0.07))
+
+define_reaction(el["ice"], el["salt_water"], random_outcome(
+    (el["water"], el["salt_water"]), (el["ice"], el["salt_water"]), p=0.08))
+
+define_reaction(el["ice"], el["salt"], random_outcome(
+    (el["salt_water"], el["nothing"]), (el["ice"], el["salt"]), p=0.04))
+
 # Define lava melting reactions
 
 define_reaction(el["lava"], el["stone"], random_outcome(
@@ -86,13 +96,15 @@ define_reaction(el["lava"], el["salt"], random_outcome(
     (el["lava"], el["lava"]), (el["lava"], el["salt"]), p=0.5))
 
 define_reaction(el["lava"], el["oil"], random_outcome(
-    (el["lava"], el["lava"]), (el["lava"], el["oil"]), p=0.8))
+    (el["lava"], el["fire_start"]), (el["lava"], el["oil"]), p=0.8))
 
 define_reaction(el["lava"], el["plant"], random_outcome(
-    (el["lava"], el["lava"]), (el["lava"], el["plant"]), p=0.5))
+    (el["lava"], el["fire_start"]), (el["lava"], el["plant"]), p=0.5))
 
 define_reaction(el["lava"], el["sand"], random_outcome(
     (el["lava"], el["lava"]), (el["lava"], el["sand"]), p=0.5))
+
+define_reaction(el["lava"], el["ice"], (el["stone"], el["water"]))
 
 define_reaction(el["lava"], el["water"], (el["stone"], el["nothing"]))
 
@@ -124,10 +136,35 @@ define_reaction(el["acid"], el["salt_water"], random_outcome(
 
 define_reaction(el["acid"], el["sand"], (el["nothing"], el["nothing"]))
 
+# Implement clone elements
+
+for name, element in el.items():
+    if element in cloneables:
+        if element not in fire_stages or element == el["fire_start"]:
+            clone_name = "clone_" + name
+            # Define initial cloning
+            define_reaction(el["clone_base"], element, (el[clone_name], element))
+            # Define cloning spread
+            define_reaction(el["clone_base"], el[clone_name], 
+                            (el[clone_name], el[clone_name]))
+            # Define actual element cloning
+            define_reaction(el[clone_name], el["nothing"], (el[clone_name], element)) 
+
 # Define fire reactions for every stage of fire
 
 for fire_stage in fire_stages:
     define_reaction(el["oil"], fire_stage,
                     (el["fire_start"], el["fire_start"]))
+
     define_reaction(el["plant"], fire_stage, random_outcome(
         (el["fire_start"], el["sand"]), (el["fire_start"], el["fire_start"]), p=0.2))
+
+    define_reaction(el["ice"], fire_stage, random_outcome(
+        (el["water"], fire_stage), (el["ice"], fire_stage), p=0.15))
+
+    clone_name = "clone_fire_start"
+
+    # Define initial cloning
+    define_reaction(el["clone_base"], fire_stage, (el[clone_name], el["fire_start"]))
+
+
